@@ -1,0 +1,15 @@
+[gd_resource type="Environment" load_steps=3 format=3 uid="uid://gfhp6vmlkgrv"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_x6ue4"]
+
+[sub_resource type="Sky" id="Sky_8gmpv"]
+sky_material = SubResource("PhysicalSkyMaterial_x6ue4")
+
+[resource]
+background_mode = 2
+background_energy_multiplier = 0.2
+sky = SubResource("Sky_8gmpv")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 2
+ssao_enabled = true

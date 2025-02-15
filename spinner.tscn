@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgwlrfmaet6rq"]
+
+[ext_resource type="Script" uid="uid://b25vnanrwk1ff" path="res://spinner.gd" id="1_kke46"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_g355w"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g355w"]
+radius = 0.2
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_kke46"]
+radius = 0.2
+
+[node name="Spinner" type="Node3D"]
+script = ExtResource("1_kke46")
+
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="."]
+collision_layer = 17
+collision_mask = 17
+physics_material_override = SubResource("PhysicsMaterial_g355w")
+sync_to_physics = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AnimatableBody3D"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_g355w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AnimatableBody3D"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_kke46")

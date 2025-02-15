@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://ced48kmp2b0lh"]
+
+[ext_resource type="PackedScene" uid="uid://cx4rnfthdoglm" path="res://chain/Chain.tscn" id="1_ig7tw"]
+[ext_resource type="Environment" uid="uid://gfhp6vmlkgrv" path="res://main_environment.tres" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bgwlrfmaet6rq" path="res://spinner.tscn" id="3_h2yge"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Chain" parent="." instance=ExtResource("1_ig7tw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.462774, 0, -0.898558)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.646377, 0.763018, 0, -0.763018, 0.646377, 0, 5.741, 0)
+light_bake_mode = 0
+shadow_enabled = true
+shadow_opacity = 0.75
+shadow_blur = 0.75
+directional_shadow_blend_splits = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_0xm2m")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.877583, -0.229849, 0.420735, 0, 0.877583, 0.479426, -0.479426, -0.420736, 0.770151, 1.68294, 1.9177, 3.08061)
+visible = false
+fov = 41.3627
+
+[node name="Spinner" parent="." instance=ExtResource("3_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.360331, -1.81552, 0.272018)
