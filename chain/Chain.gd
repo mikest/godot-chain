@@ -70,11 +70,15 @@ func _create_physical_bone(bone_idx: int, link_spacing:float, template: Physical
 
 func _queue_rebuild_bones():
 	# Remove existing bones, and phy_bones
-	for child in simulator.get_children():
-		child.queue_free()
+	_rebuild_bones()
+
+func _clear_bones():
+	skeleton.clear_bones()
 	
-	skeleton.call_deferred("clear_bones")
-	call_deferred("_rebuild_bones")
+	for child in simulator.get_children():
+		if child != link and child != ball:
+			simulator.remove_child(child)
+			child.queue_free()
 
 func _setup_hinge(bone: PhysicalBone3D, lock: bool = false):
 	bone.collision_layer = 0
@@ -113,25 +117,17 @@ func _rebuild_bones():
 		return
 
 	# Remove existing bones, and phy_bones
-	skeleton.clear_bones()
-	for child in simulator.get_children():
-		if child != link and child != ball:
-			simulator.remove_child(child)
-			child.free()
-
-	# create invisible anchor
-	var bone_idx: int #= _add_bone_to_chain("Anchor", IDENTITY)
+	_clear_bones()
 
 	# attach template
-	bone_idx = _add_bone_to_chain("Link",  IDENTITY)
+	var bone_idx := _add_bone_to_chain("Link",  IDENTITY)
 	var link_spacing := _link_spacing(link)
 	link.body_offset = IDENTITY.translated(Vector3(0,-link_spacing/2,0))
 	#link.joint_offset = IDENTITY.translated(Vector3(0,-link_spacing/2,0))
 	_setup_hinge(link, true)
-	skeleton.force_update_bone_child_transform(bone_idx)
 
 	# Creat the rest of the links
-	for n in range(0, link_count):	# Head is bone 0
+	for n in range(1, link_count):	# Head is bone 0, so start at 1
 		# create virtual bone first	
 		# set transforms for new nodes, transforms are relative to previous bone
 		var bone_xform := IDENTITY \
@@ -145,22 +141,26 @@ func _rebuild_bones():
 		
 		simulator.add_child(new_link)
 		assert(new_link.get_bone_id()>=0, "Unassigned bone")
-		skeleton.force_update_bone_child_transform(bone_idx)
-			
-	
+
 	# Attach the ball
 	if ball:
 		var ball_spacing = _link_spacing(ball)
-		
 		var ball_xform := IDENTITY.translated(Vector3(0, -link_spacing, 0))
 		bone_idx = _add_bone_to_chain("Ball", ball_xform)
-		skeleton.force_update_bone_child_transform(bone_idx)
 		
+		ball.transform = IDENTITY
 		ball.body_offset = IDENTITY.translated(Vector3(0,-ball_spacing/2,0))
 		_setup_hinge(ball)
 	
+	skeleton.force_update_bone_child_transform(0)
 	var bones := skeleton.get_concatenated_bone_names();
 	print(bones)
+	
+	# rebuild transforms
+	if Engine.is_editor_hint():
+		simulator.update_gizmos()
+		skeleton.update_gizmos()
+	#skeleton.force_update_bone_child_transform(0)
 
 
 # Called when the node enters the scene tree for the first time.

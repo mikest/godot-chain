@@ -6,9 +6,6 @@
 
 [node name="Main" type="Node3D"]
 
-[node name="Chain" parent="." instance=ExtResource("1_ig7tw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.462774, 0, -0.898558)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.646377, 0.763018, 0, -0.763018, 0.646377, 0, 5.741, 0)
 light_bake_mode = 0
@@ -25,5 +22,8 @@ transform = Transform3D(0.877583, -0.229849, 0.420735, 0, 0.877583, 0.479426, -0
 visible = false
 fov = 41.3627
 
+[node name="Chain" parent="." instance=ExtResource("1_ig7tw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1402, 0)
+
 [node name="Spinner" parent="." instance=ExtResource("3_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.360331, -1.81552, 0.272018)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.761743, 0.939333)
