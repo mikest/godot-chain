@@ -165,9 +165,12 @@ func _rebuild_bones() -> bool:
 	#simulator.add_child(ball)
 	
 	# start
-	#skeleton.force_update_bone_child_transform(0)
 	#skeleton.remove_child(simulator)
 	#skeleton.add_child(simulator)
+	simulator.reparent(self)
+	simulator.reparent(skeleton)
+	
+	skeleton.force_update_bone_child_transform(0)
 	simulator.physical_bones_start_simulation()
 	print(skeleton.get_concatenated_bone_names())
 	return true
