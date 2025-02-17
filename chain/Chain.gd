@@ -4,23 +4,18 @@ extends Node3D
 	get:
 		return link_count
 	set(value):
-		link_count = value
-		rebuild = true
+		var new_value: int = max(value, 2)
+		if new_value != link_count:
+			link_count = new_value
+			rebuild = true
 
 @onready var skeleton: Skeleton3D = $Skeleton3D
-@onready var simulator: PhysicalBoneSimulator3D = $Skeleton3D/PhysicalBoneSimulator3D
+@onready var simulator: PhysicalBoneSimulator3D = $Skeleton3D/Simulator
 
 var anchor: PhysicalBone3D = null
 var link: PhysicalBone3D = null
 var ball: PhysicalBone3D = null
 var rebuild: bool = true
-
-const IDENTITY := Transform3D.IDENTITY
-
-#@onready var link: PhysicalBone3D = $LinkSkeleton/PhysicalBoneSimulator3D/Bone
-#@onready var mesh: MeshInstance3D = $LinkSkeleton/PhysicalBoneSimulator3D/Bone/Link
-
-var link_offset: Vector3
 
 # creates a single virtual bone, as a child of the bone before it.
 func _add_bone_to_chain(bone_name: String, length: float, twist: float) -> int:
@@ -32,7 +27,7 @@ func _add_bone_to_chain(bone_name: String, length: float, twist: float) -> int:
 	
 	# our pose is the same as our rest
 	# xform is offset relative to parent bone
-	var xform := IDENTITY \
+	var xform := Transform3D.IDENTITY \
 			.translated(Vector3(0,-length,0)) \
 			.rotated(Vector3.UP, deg_to_rad(twist))
 	skeleton.set_bone_rest(bone_idx, xform)
@@ -40,10 +35,7 @@ func _add_bone_to_chain(bone_name: String, length: float, twist: float) -> int:
 	
 	return bone_idx
 
-func _create_physical_bone(bone_idx: int, template: PhysicalBone3D) -> PhysicalBone3D:
-	var bone_name := skeleton.get_bone_name(bone_idx)
-	assert(bone_idx!=-1, "Unable to find bone")
-	
+func _create_physical_bone(bone_name:String, template: PhysicalBone3D) -> PhysicalBone3D:
 	# create the new PhysicalBone3D, set its bone_name and add it to the Simulator
 	var phy_bone: PhysicalBone3D = template.duplicate()
 	
@@ -62,15 +54,17 @@ func _clear_bones():
 	# this only clear the logical bones in the skeleton
 	skeleton.clear_bones()
 	
-	# now we need to clear _only_ the auto-generated children
-	var children := simulator.find_children("Link.*", "PhysicalBone3D", false)
+	# now we need to clear _all_ the auto-generated children
+	var children := simulator.get_children(true)
 	for child in children:
-		simulator.remove_child(child)
-		child.queue_free()
-	
-	#now remove the rest of the children, but don't free them
-	#for child in simulator.get_children():
-		#simulator.remove_child(child)
+		# This if statement is looking for the "shadow" bones for when we're in the editor
+		# as well as the "real" bones when we're not.
+		# This will skip Anchor, Link & Ball
+		if child.name.begins_with("@PhysicalBone3D") or child.name.begins_with("Link_"):
+			#print("Removing ", child.name)
+			simulator.remove_child(child)
+			child.queue_free()
+
 
 func _setup_hinge(bone: PhysicalBone3D, lock: bool = false):
 	bone.linear_velocity = Vector3.ZERO
@@ -79,8 +73,8 @@ func _setup_hinge(bone: PhysicalBone3D, lock: bool = false):
 	bone.collision_layer = 0
 	bone.collision_mask = 1
 	
-	bone.body_offset = IDENTITY
-	bone.joint_offset = IDENTITY
+	bone.body_offset = Transform3D.IDENTITY
+	bone.joint_offset = Transform3D.IDENTITY
 	bone.joint_rotation = Vector3.ZERO #(0,0,deg_to_rad(15))
 	bone.angular_damp = 1.0
 	bone.linear_damp = 0.2
@@ -138,40 +132,40 @@ func _rebuild_bones() -> bool:
 	_clear_bones()
 
 	# Anchor
-	var bone_idx := _add_bone_to_chain("Anchor",  0, 0)
+	_add_bone_to_chain("Anchor",  0, 0)
 	var anchor_spacing := _link_spacing(anchor)
 	_setup_hinge(anchor, true)
 	#simulator.add_child(anchor)
 	
 	# First Link
-	bone_idx = _add_bone_to_chain("Link",  anchor_spacing/2, 0)
+	_add_bone_to_chain("Link",  anchor_spacing/2, 0)
 	_setup_hinge(link)
 	#simulator.add_child(link)
 
 	# Remaining Links
 	var link_spacing := _link_spacing(link)
 	for n in range(1, link_count):	# Head is bone 0, so start at 1
-		bone_idx = _add_bone_to_chain("Link." + str(n), link_spacing, 90)
-
+		var bone_name := "Link_" + str(n)
+		
 		# creat the physical bone next, and link it with the name
-		var new_link := _create_physical_bone(bone_idx, link)
-		if new_link:
-			simulator.add_child(new_link)
+		var new_link := _create_physical_bone(bone_name, link)
+		_add_bone_to_chain(bone_name, link_spacing, 90)
+		simulator.add_child(new_link)
 
 	# Ball
 	# spacing is one link length, not ball length
-	bone_idx = _add_bone_to_chain("Ball", link_spacing, 0)
+	_add_bone_to_chain("Ball", link_spacing, 90)
 	_setup_hinge(ball)
-	#simulator.add_child(ball)
 	
-	# start
-	#skeleton.remove_child(simulator)
-	#skeleton.add_child(simulator)
-	simulator.reparent(self)
-	simulator.reparent(skeleton)
+	# Manually update the ball position on resize.
+	if Engine.is_editor_hint():
+		skeleton.force_update_bone_child_transform(0)
+		var xform := skeleton.get_bone_global_pose(skeleton.find_bone("Ball"))
+		ball.transform = xform
+		ball.force_update_transform()
 	
-	skeleton.force_update_bone_child_transform(0)
-	simulator.physical_bones_start_simulation()
+	if not Engine.is_editor_hint():
+		simulator.physical_bones_start_simulation()
 	print(skeleton.get_concatenated_bone_names())
 	return true
 

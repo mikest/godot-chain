@@ -16,7 +16,7 @@ height = 0.24
 
 [node name="Chain" type="Node3D"]
 script = ExtResource("1_ceisd")
-link_count = 6
+link_count = 2
 
 [node name="Skeleton3D" type="Skeleton3D" parent="."]
 modifier_callback_mode_process = 0
@@ -34,53 +34,24 @@ bones/1/enabled = true
 bones/1/position = Vector3(0, -0.1, 0)
 bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
-bones/2/name = "Link.1"
+bones/2/name = "Link_1"
 bones/2/parent = 1
 bones/2/rest = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.24, 0)
 bones/2/enabled = true
 bones/2/position = Vector3(0, -0.24, 0)
 bones/2/rotation = Quaternion(0, 0.707107, 0, 0.707107)
 bones/2/scale = Vector3(1, 1, 1)
-bones/3/name = "Link.2"
+bones/3/name = "Ball"
 bones/3/parent = 2
 bones/3/rest = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.24, 0)
 bones/3/enabled = true
 bones/3/position = Vector3(0, -0.24, 0)
 bones/3/rotation = Quaternion(0, 0.707107, 0, 0.707107)
 bones/3/scale = Vector3(1, 1, 1)
-bones/4/name = "Link.3"
-bones/4/parent = 3
-bones/4/rest = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.24, 0)
-bones/4/enabled = true
-bones/4/position = Vector3(0, -0.24, 0)
-bones/4/rotation = Quaternion(0, 0.707107, 0, 0.707107)
-bones/4/scale = Vector3(1, 1, 1)
-bones/5/name = "Link.4"
-bones/5/parent = 4
-bones/5/rest = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.24, 0)
-bones/5/enabled = true
-bones/5/position = Vector3(0, -0.24, 0)
-bones/5/rotation = Quaternion(0, 0.707107, 0, 0.707107)
-bones/5/scale = Vector3(1, 1, 1)
-bones/6/name = "Link.5"
-bones/6/parent = 5
-bones/6/rest = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.24, 0)
-bones/6/enabled = true
-bones/6/position = Vector3(0, -0.24, 0)
-bones/6/rotation = Quaternion(0, 0.707107, 0, 0.707107)
-bones/6/scale = Vector3(1, 1, 1)
-bones/7/name = "Ball"
-bones/7/parent = 6
-bones/7/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24, 0)
-bones/7/enabled = true
-bones/7/position = Vector3(0, -0.24, 0)
-bones/7/rotation = Quaternion(0, 0, 0, 1)
-bones/7/scale = Vector3(1, 1, 1)
 
-[node name="PhysicalBoneSimulator3D" type="PhysicalBoneSimulator3D" parent="Skeleton3D"]
+[node name="Simulator" type="PhysicalBoneSimulator3D" parent="Skeleton3D"]
 
-[node name="Anchor" type="PhysicalBone3D" parent="Skeleton3D/PhysicalBoneSimulator3D"]
-top_level = true
+[node name="Anchor" type="PhysicalBone3D" parent="Skeleton3D/Simulator"]
 collision_layer = 0
 axis_lock_linear_x = true
 axis_lock_linear_y = true
@@ -101,17 +72,16 @@ joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Anchor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Skeleton3D/Simulator/Anchor"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = ExtResource("2_jab2g")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Anchor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/Simulator/Anchor"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 shape = SubResource("SphereShape3D_jab2g")
 
-[node name="Link" type="PhysicalBone3D" parent="Skeleton3D/PhysicalBoneSimulator3D"]
+[node name="Link" type="PhysicalBone3D" parent="Skeleton3D/Simulator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-top_level = true
 collision_layer = 0
 joint_type = 3
 linear_damp_mode = 1
@@ -125,21 +95,20 @@ joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Link"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/Simulator/Link"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, 0)
 shape = SubResource("CapsuleShape3D_g8x4m")
 
-[node name="Link" type="MeshInstance3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Link"]
+[node name="Link" type="MeshInstance3D" parent="Skeleton3D/Simulator/Link"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, 0)
 mesh = ExtResource("3_ii5xh")
 
-[node name="Ball" type="PhysicalBone3D" parent="Skeleton3D/PhysicalBoneSimulator3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.80638, 0)
-top_level = true
+[node name="Ball" type="PhysicalBone3D" parent="Skeleton3D/Simulator"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.58, 0)
 collision_layer = 0
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.266378, 0)
-body_offset = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, -0.266378, 0)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
+body_offset = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.58, 0)
 linear_damp_mode = 1
 linear_damp = 0.2
 angular_damp = 1.0
@@ -151,11 +120,11 @@ joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Ball"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/Simulator/Ball"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("SphereShape3D_xjal1")
 
-[node name="ball" type="MeshInstance3D" parent="Skeleton3D/PhysicalBoneSimulator3D/Ball"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24, 0)
+[node name="ball" type="MeshInstance3D" parent="Skeleton3D/Simulator/Ball"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 gi_mode = 0
 mesh = ExtResource("4_fbwod")
