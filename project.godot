@@ -18,3 +18,8 @@ config/icon="res://icon.svg"
 [display]
 
 window/size/viewport_width=1280
+window/size/initial_position_type=2
+
+[editor]
+
+movie_writer/movie_file="C:/Users/mikest/github/godot-chain/godot-chain.avi"

@@ -18,12 +18,11 @@ directional_shadow_blend_splits = true
 environment = ExtResource("2_0xm2m")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.877583, -0.229849, 0.420735, 0, 0.877583, 0.479426, -0.479426, -0.420736, 0.770151, 1.68294, 1.9177, 3.08061)
-visible = false
-fov = 41.3627
+transform = Transform3D(0.895479, -0.152235, 0.418261, 0.0440376, 0.965384, 0.257088, -0.442921, -0.211798, 0.871185, 2.073, 1.618, 4.041)
+fov = 32.0091
 
 [node name="Chain" parent="." instance=ExtResource("1_ig7tw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1402, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35361, 0)
 
 [node name="Spinner" parent="." instance=ExtResource("3_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.761743, 0.939333)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.215371, 0.54704, -0.934745)
