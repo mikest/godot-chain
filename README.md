@@ -1,5 +1,8 @@
 # Godot Chain Demo
 
+NOTE: You won't be able to change the chain length on this code until this PR lands.
+https://github.com/godotengine/godot/pull/102939
+
 ## Skeleton3D/PhysicalBoneSimulator does not clean up internal state when removing bones
 - Reproduced in 4.3, 4.4b3
 - Windows 11, Godot-4.4beta3
